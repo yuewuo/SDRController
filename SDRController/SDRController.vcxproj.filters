@@ -54,6 +54,15 @@
     <ClCompile Include="SwitchesShow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_SDRVersion.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_SDRVersion.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SDRVersion.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="SDRMain.h">
@@ -71,12 +80,15 @@
     <CustomBuild Include="SwitchesShow.ui">
       <Filter>Form Files</Filter>
     </CustomBuild>
+    <CustomBuild Include="SDRVersion.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="GeneratedFiles\ui_SDRMain.h">
+    <ClInclude Include="GeneratedFiles\ui_SwitchesShow.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
-    <ClInclude Include="GeneratedFiles\ui_SwitchesShow.h">
+    <ClInclude Include="GeneratedFiles\ui_SDRMain.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
   </ItemGroup>

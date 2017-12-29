@@ -1,0 +1,25 @@
+{
+    "switches": [
+        "0 0 0 1",
+        "0 0 1 0",
+        "0 1 1 0",
+        "1 0 2 0",
+        "2 0 3 0",
+        "2 2 2 3",
+        "2 2 3 2"
+    ],
+    "update": "2017/12/29 18:52:12",
+    "version": "SDRController V0.1",
+    "plugins": [
+        {
+            "name": "PN532",
+            "descriptor": "NFC Demo Module",
+            "position": "0 0"
+        },
+        {
+            "name": "QiDemo",
+            "descriptor": "Qi Wireless Charging",
+            "position": "0 0"
+        }
+    ]
+}
