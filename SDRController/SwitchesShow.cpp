@@ -16,7 +16,7 @@ int SDRprintf(const char* format, ...)
 	int i;
 	va_list vlist;
 	va_start(vlist, format);
-	i = vsprintf_s(buf, format, vlist);
+	i = vsprintf(buf, format, vlist);
 	va_end(vlist);
 	qDebug() << buf;
 	return i;
@@ -179,7 +179,7 @@ void SwitchesShow::paintEvent(QPaintEvent * event)
 		vector<double> pl = it->giveme3line();
 		nodes.insert(it->a);
 		nodes.insert(it->b);
-		for (int j = 0; j + 3 < pl.size(); j += 4) {
+		for (size_t j = 0; j + 3 < pl.size(); j += 4) {
 			painter.setPen(QPen(it->getColor(j / 4), 3));
 			painter.drawLine(toPixelX(pl[j]), toPixelY(pl[j+1])
 				, toPixelX(pl[j+2]), toPixelY(pl[j+3]));
@@ -188,7 +188,7 @@ void SwitchesShow::paintEvent(QPaintEvent * event)
 		painter.setPen(QPen(QColor("lightGrey"), 1));
 		vector<double> plg = getPolygons(it->a, it->b);
 		QPointF* plgps = new QPointF[plg.size() / 2];
-		for (int j = 0; j + 1 < plg.size(); j += 2) {
+		for (size_t j = 0; j + 1 < plg.size(); j += 2) {
 			plgps[j / 2].setX(plg[j]);
 			plgps[j / 2].setY(plg[j+1]);
 		}
@@ -247,7 +247,7 @@ vector<double> SwitchesShow::getPolygons(const IntPoint & a, const IntPoint & b)
 	double x1 = toPixelX(a.x()), y1 = toPixelY(a.y());
 	double x2 = toPixelX(b.x()), y2 = toPixelY(b.y());
 	double delX = x2 - x1, delY = y2 - y1;
-	for (int i = 0; i + 1 < v.size(); i += 2) {
+	for (size_t i = 0; i + 1 < v.size(); i += 2) {
 		double x = v[i];
 		double y = v[i + 1];
 		double ax = x1 + delX * x;

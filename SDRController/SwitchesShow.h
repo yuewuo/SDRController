@@ -19,6 +19,7 @@
 #include <QMessageBox>
 #include "ui_SwitchesShow.h"
 #include "SDRVersion.h"
+#include <cmath>
 
 using std::vector;
 using std::map;
