@@ -19,7 +19,10 @@ public slots:
 	void pushButton_importconfig_onclick();
 	void pushButton_exportconfig_onclick();
 	void pushButton_changLine_onclick();
+	virtual void timerEvent(QTimerEvent *event);
 
 private:
 	Ui::SDRMainClass ui;
+	int timerID;
+	void handleTimeout();
 };

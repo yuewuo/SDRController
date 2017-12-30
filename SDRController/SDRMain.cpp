@@ -7,6 +7,7 @@ SDRMain::SDRMain(QWidget *parent)
 	connect(ui.pushButton_importconfig, SIGNAL(clicked()), this, SLOT(pushButton_importconfig_onclick()));
 	connect(ui.pushButton_exportconfig, SIGNAL(clicked()), this, SLOT(pushButton_exportconfig_onclick()));
 	connect(ui.pushButton_changLine, SIGNAL(clicked()), this, SLOT(pushButton_changLine_onclick()));
+	timerID = this->startTimer(200); // ms
 }
 
 /* 
@@ -70,4 +71,17 @@ void SDRMain::pushButton_changLine_onclick()
 	} else {
 		QMessageBox::about(NULL, "Tips", "input integer (x1, y1)(x2, y2), the num=0,1,2, stat\nnot");
 	}
+}
+
+void SDRMain::timerEvent(QTimerEvent * event)
+{
+	if (event->timerId() == timerID) {
+		handleTimeout();
+		//killTimer(timerID); // kill the timer
+	}
+}
+
+void SDRMain::handleTimeout()
+{
+	qDebug() << "hello";
 }
