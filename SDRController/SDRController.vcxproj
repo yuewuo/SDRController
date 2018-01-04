@@ -69,6 +69,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="duhttp.c" />
+    <ClCompile Include="duhttpplatformrelated.c" />
     <ClCompile Include="GeneratedFiles\Debug\moc_SDRMain.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
@@ -125,6 +127,7 @@
   <ItemGroup>
     <ClInclude Include="GeneratedFiles\ui_SDRMain.h" />
     <ClInclude Include="GeneratedFiles\ui_SwitchesShow.h" />
+    <ClInclude Include="duhttp.h" />
     <CustomBuild Include="SDRVersion.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Moc%27ing SDRVersion.h...</Message>

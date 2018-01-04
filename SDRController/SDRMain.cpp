@@ -77,7 +77,7 @@ void SDRMain::timerEvent(QTimerEvent * event)
 {
 	if (event->timerId() == timerID) {
 		handleTimeout();
-		//killTimer(timerID); // kill the timer
+		killTimer(timerID); // kill the timer
 	}
 }
 

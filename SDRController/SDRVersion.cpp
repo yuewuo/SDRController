@@ -15,3 +15,7 @@ QString SDRVersion::version()
 {
 	return QString(version_name);
 }
+
+void DuHttp_ELOG(const char* str) {
+
+}
