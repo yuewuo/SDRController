@@ -1,5 +1,13 @@
 #include "SDRMain.h"
 
+/*
+ * SDRMain负责三个工作：
+ *	1. 即时响应ui操作，包括导入导出config文件。
+ *  2. 定时计算布线方案并更新ui中数据结构。
+ *  3. 即时响应esp32进一步通信的逻辑控制。
+ */
+
+
 SDRMain::SDRMain(QWidget *parent)
 	: QMainWindow(parent)
 {
@@ -83,5 +91,16 @@ void SDRMain::timerEvent(QTimerEvent * event)
 
 void SDRMain::handleTimeout()
 {
-	qDebug() << "hello";
+	arr.lockDataMutex();
+	arr.NofCharging = arr.chargeList.size();
+	arr.coilList.assign(arr.chargeList.begin(), arr.chargeList.end());  // 充电
+	arr.coilList.insert(arr.coilList.end(), arr.commuList.begin(), arr.commuList.end());  // 通信
+	// TODO：扫描
+	arr.unlockDataMutex();
+
+	ui.switchesShowWidget->lockDataMutex();
+	arr.initiation(ui.switchesShowWidget);  // ui的线路信息和源信息
+	arr.build(ui.switchesShowWidget);  // controller的汇信息
+	arr.flow(ui.switchesShowWidget);  // 布线并更新ui
+	ui.switchesShowWidget->unlockDataMutex();
 }

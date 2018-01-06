@@ -63,12 +63,6 @@
     <ClCompile Include="SDRVersion.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="duhttp.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="duhttpplatformrelated.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="SDRMain.h">
@@ -96,9 +90,6 @@
     </ClInclude>
     <ClInclude Include="GeneratedFiles\ui_SDRMain.h">
       <Filter>Generated Files</Filter>
-    </ClInclude>
-    <ClInclude Include="duhttp.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
