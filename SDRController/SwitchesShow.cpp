@@ -28,6 +28,8 @@ SwitchesShow::SwitchesShow(QWidget *parent)
 	: QWidget(parent)
 {
 	ui.setupUi(this);
+	setFocusPolicy(Qt::ClickFocus);
+	extraInit();
 }
 
 SwitchesShow::~SwitchesShow()
@@ -51,6 +53,7 @@ int SwitchesShow::importConfig(string jsonstr)
 			if (json.contains("switches")) {
 				mutex.lock();
 				lines.clear(); // clear the set
+				extraInit();
 				QJsonValue val = json.take("switches");
 				if (val.isArray()) {
 					QJsonArray arr = val.toArray();
@@ -80,6 +83,7 @@ int SwitchesShow::importConfig(string jsonstr)
 			if (json.contains("plugins")) {
 				mutex.lock();
 				plugins.clear();
+				extraInit();
 				QJsonValue val = json.take("plugins");
 				if (val.isArray()) {
 					QJsonArray arr = val.toArray();
@@ -211,6 +215,13 @@ void SwitchesShow::paintEvent(QPaintEvent * event)
 		painter.drawEllipse(QPointF(toPixelX(it->x()), toPixelY(it->y())), normToPixel * normCircleSize, normToPixel * normCircleSize);
 	} painter.setBrush(QColor(0, 0, 0, 0));
 
+	if (isfocusIntPoint) {
+		painter.setPen(QPen(QColor(255, 0, 0), 3));
+		painter.setBrush(QColor(0, 0, 0, 0));
+		painter.drawEllipse(QPointF(toPixelX(focusedIntPoint.x()), toPixelY(focusedIntPoint.y()))
+			, normToPixel * normCircleSize * 1.5, normToPixel * normCircleSize * 1.5);
+	}
+
 	mutex.unlock();
 }
 
@@ -224,10 +235,13 @@ void SwitchesShow::mouseDoubleClickEvent(QMouseEvent * e)
 	mutex.lock();
 	double R2 = normCircleSize * normToPixel;
 	R2 *= R2;
+	isfocusIntPoint = false;
 	for (set<IntPoint>::iterator it = paintedNodes.begin(); it != paintedNodes.end(); ++it) {
 		double delx = toPixelX(it->x()) - x;
 		double dely = toPixelY(it->y()) - y;
 		if (delx*delx + dely * dely < R2) { // found
+			isfocusIntPoint = true;
+			focusedIntPoint = *it;
 			str.sprintf("axis is (%d, %d)", it->alpha, it->beta);
 			PluginDevice tmpdev;
 			tmpdev.position = *it;
@@ -237,8 +251,56 @@ void SwitchesShow::mouseDoubleClickEvent(QMouseEvent * e)
 			}
 		}
 	}
+	update();
 	mutex.unlock();
 	if (str.length() > 0) QMessageBox::about(NULL, "Node", str);
+}
+
+void SwitchesShow::keyPressEvent(QKeyEvent * event)
+{
+	qDebug() << "keyPressEvent";
+	if (isfocusIntPoint) {
+		keypressed = event->key();
+		keypressedTime = QTime::currentTime();
+	}
+}
+
+void SwitchesShow::keyReleaseEvent(QKeyEvent * event)
+{
+	qDebug() << "keyReleaseEvent";
+	if (keypressed == -1) return;
+	if (event->key() == keypressed) {
+		int dx = -2, dy = -2;
+		if (keypressed == Qt::Key_W) {
+			dx = 0; dy = -1;
+		} else if (keypressed == Qt::Key_E) {
+			dx = -1; dy = 0;
+		} else if (keypressed == Qt::Key_R) {
+			dx = -1; dy = 1;
+		} else if (keypressed == Qt::Key_Z) {
+			dx = 1; dy = -1;
+		} else if (keypressed == Qt::Key_X) {
+			dx = 1; dy = 0;
+		} else if (keypressed == Qt::Key_C) {
+			dx = 0; dy = 1;
+		}
+		if (dx != -2 && dy != -2) {
+			QTime tar = QTime::currentTime().addMSecs(-300);
+			Switch3Line tmp;
+			tmp.a = focusedIntPoint;
+			tmp.b.alpha = tmp.a.alpha + dx;
+			tmp.b.beta = tmp.a.beta + dy;
+			mutex.lock();
+			if (tar < keypressedTime) { // add new line
+				lines.insert(tmp);
+			} else { // delete
+				lines.erase(tmp);
+			}
+			mutex.unlock();
+		}
+	}
+	keypressed = -1;
+	update();
 }
 
 vector<double> SwitchesShow::getPolygons(const IntPoint & a, const IntPoint & b)
@@ -328,6 +390,12 @@ void SwitchesShow::autoFitToShow()
 	normToPixel = nTPx < nTPy ? nTPx : nTPy;
 	biasX = w / 2 - (minx + maxx) / 2 * normToPixel;
 	biasY = h / 2 - (miny + maxy) / 2 * normToPixel;
+}
+
+void SwitchesShow::extraInit()
+{
+	isfocusIntPoint = false;
+	keypressed = -1;
 }
 
 double SwitchesShow::IntPoint::y() const

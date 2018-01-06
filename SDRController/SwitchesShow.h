@@ -1,5 +1,9 @@
 #pragma once
 
+/*
+ * using WERZXC to generate lines, using long press to delete line
+ */
+
 #include <QWidget>
 #include <QPainter>
 #include <QMutex>  
@@ -20,6 +24,7 @@
 #include "ui_SwitchesShow.h"
 #include "SDRVersion.h"
 #include <cmath>
+#include <QKeyEvent>
 
 using std::vector;
 using std::map;
@@ -68,8 +73,14 @@ public:
 protected:
 	void paintEvent(QPaintEvent *event);
 	void mouseDoubleClickEvent(QMouseEvent *e);
+	void keyPressEvent(QKeyEvent  *event);
+	void keyReleaseEvent(QKeyEvent  *event);
 
 private:
+	int keypressed;
+	QTime keypressedTime;
+	bool isfocusIntPoint = false;
+	IntPoint focusedIntPoint;
 	set<IntPoint> paintedNodes;
 	QMutex mutex; // must lock this one to operate data
 	Ui::SwitchesShow ui;
@@ -78,4 +89,5 @@ private:
 	double toPixelX(double normalx);
 	double toPixelY(double normaly);
 	void autoFitToShow(); // must call this when mutex is locked
+	void extraInit();
 };
