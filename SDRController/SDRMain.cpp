@@ -7,15 +7,15 @@
  *  3. 即时响应esp32进一步通信的逻辑控制。
  */
 
-
 SDRMain::SDRMain(QWidget *parent)
 	: QMainWindow(parent)
 {
 	ui.setupUi(this);
+	timer = new QTimer(this);
 	connect(ui.pushButton_importconfig, SIGNAL(clicked()), this, SLOT(pushButton_importconfig_onclick()));
 	connect(ui.pushButton_exportconfig, SIGNAL(clicked()), this, SLOT(pushButton_exportconfig_onclick()));
 	connect(ui.pushButton_changLine, SIGNAL(clicked()), this, SLOT(pushButton_changLine_onclick()));
-	timerID = this->startTimer(200); // ms
+	connect(timer, SIGNAL(timeout()), this, SLOT(onTimeout()));
 }
 
 /* 
@@ -29,12 +29,15 @@ void SDRMain::pushButton_importconfig_onclick()
 		QMessageBox::about(NULL, "ERROR", "Cannot open \"switches.json\" for reading");
 		return;
 	}
+	if (timer->isActive()) timer->stop();
 	QByteArray bytes = file.readAll();
 	QString str(bytes);
 	string json = str.toStdString();
 	if (0 != ui.switchesShowWidget->importConfig(json)) {
 		QMessageBox::about(NULL, "ERROR", "Configure file error");
 	}
+	else
+		timer->start(timer_interval);
 }
 
 void SDRMain::pushButton_exportconfig_onclick()
@@ -81,15 +84,8 @@ void SDRMain::pushButton_changLine_onclick()
 	}
 }
 
-void SDRMain::timerEvent(QTimerEvent * event)
-{
-	if (event->timerId() == timerID) {
-		handleTimeout();
-		killTimer(timerID); // kill the timer
-	}
-}
-
-void SDRMain::handleTimeout()
+// TODO：新布线算法
+void SDRMain::onTimeout()
 {
 	arr.lockDataMutex();
 	arr.NofCharging = arr.chargeList.size();
