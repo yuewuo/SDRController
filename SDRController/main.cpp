@@ -1,5 +1,5 @@
-#include "SDRMain.h"
 #include <QtWidgets/QApplication>
+#include "SDRMain.h"
 
 int main(int argc, char *argv[])
 {
