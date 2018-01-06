@@ -330,17 +330,17 @@ void SwitchesShow::autoFitToShow()
 	biasY = h / 2 - (miny + maxy) / 2 * normToPixel;
 }
 
-double SwitchesShow::IntPoint::y() const
+double IntPoint::y() const
 {
 	return alpha + ((double)beta) / 2;
 }
 
-double SwitchesShow::IntPoint::x() const
+double IntPoint::x() const
 {
 	return ((double)beta) / 2 * sqrt(3);
 }
 
-bool SwitchesShow::IntPoint::operator<(const IntPoint & p) const
+bool IntPoint::operator<(const IntPoint & p) const
 {
 	if (alpha < p.alpha) return true;
 	if (alpha > p.alpha) return false;
@@ -348,7 +348,7 @@ bool SwitchesShow::IntPoint::operator<(const IntPoint & p) const
 	return false;
 }
 
-vector<double> SwitchesShow::Switch3Line::giveme3line() const
+vector<double> Switch3Line::giveme3line() const
 {
 	vector<double> pl; // Ax1, Ay1, Ax2, Ay2, Bx1, By1, Bx2, By2, Cx1, Cy1, Cx2, Cy2, 12 elements
 	double ax = a.x(), ay = a.y();
@@ -381,7 +381,7 @@ vector<double> SwitchesShow::Switch3Line::giveme3line() const
 	return pl;
 }
 
-QColor SwitchesShow::Switch3Line::getColor(int lineno) const
+QColor Switch3Line::getColor(int lineno) const
 {
 	if (lineno < 0 || lineno > 2) {
 		SDRprintf("error %s(%d): lineno = %d\n", __FILE__, __LINE__, lineno);
@@ -399,7 +399,7 @@ QColor SwitchesShow::Switch3Line::getColor(int lineno) const
 	}
 }
 
-bool SwitchesShow::Switch3Line::operator<(const Switch3Line & l) const
+bool Switch3Line::operator<(const Switch3Line & l) const
 {
 	const IntPoint minp1 = a < b ? a : b;
 	const IntPoint maxp1 = a < b ? b : a;
@@ -411,12 +411,12 @@ bool SwitchesShow::Switch3Line::operator<(const Switch3Line & l) const
 	return false;
 }
 
-bool SwitchesShow::PluginDevice::operator<(const PluginDevice & p) const
+bool PluginDevice::operator<(const PluginDevice & p) const
 {
 	return position < p.position;
 }
 
-QColor SwitchesShow::PluginDevice::getColor() const
+QColor PluginDevice::getColor() const
 {
 	if (state == 0) {
 		return QColor("green");

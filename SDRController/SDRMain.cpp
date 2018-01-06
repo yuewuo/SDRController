@@ -1,12 +1,21 @@
 #include "SDRMain.h"
 
+/*
+ * SDRMain负责三个工作：
+ *	1. 即时响应ui操作，包括导入导出config文件。
+ *  2. 定时计算布线方案并更新ui中数据结构。
+ *  3. 即时响应esp32进一步通信的逻辑控制。
+ */
+
 SDRMain::SDRMain(QWidget *parent)
 	: QMainWindow(parent)
 {
 	ui.setupUi(this);
+	timer = new QTimer(this);
 	connect(ui.pushButton_importconfig, SIGNAL(clicked()), this, SLOT(pushButton_importconfig_onclick()));
 	connect(ui.pushButton_exportconfig, SIGNAL(clicked()), this, SLOT(pushButton_exportconfig_onclick()));
 	connect(ui.pushButton_changLine, SIGNAL(clicked()), this, SLOT(pushButton_changLine_onclick()));
+	connect(timer, SIGNAL(timeout()), this, SLOT(onTimeout()));
 }
 
 /* 
@@ -20,12 +29,15 @@ void SDRMain::pushButton_importconfig_onclick()
 		QMessageBox::about(NULL, "ERROR", "Cannot open \"switches.json\" for reading");
 		return;
 	}
+	if (timer->isActive()) timer->stop();
 	QByteArray bytes = file.readAll();
 	QString str(bytes);
 	string json = str.toStdString();
 	if (0 != ui.switchesShowWidget->importConfig(json)) {
 		QMessageBox::about(NULL, "ERROR", "Configure file error");
 	}
+	else
+		timer->start(timer_interval);
 }
 
 void SDRMain::pushButton_exportconfig_onclick()
@@ -58,11 +70,11 @@ void SDRMain::pushButton_changLine_onclick()
 	if (ok) stat = ui.lineEdit_changLinestat->text().toInt(&ok);
 	if (ok) {
 		ui.switchesShowWidget->lockDataMutex(); // must lock when manipulate data
-		set<SwitchesShow::Switch3Line> & lines = ui.switchesShowWidget->lines;
-		SwitchesShow::Switch3Line tmp;
+		set<Switch3Line> & lines = ui.switchesShowWidget->lines;
+		Switch3Line tmp;
 		tmp.a.alpha = x1; tmp.a.beta = y1;
 		tmp.b.alpha = x2; tmp.b.beta = y2;
-		set<SwitchesShow::Switch3Line>::iterator fnd = lines.find(tmp);
+		set<Switch3Line>::iterator fnd = lines.find(tmp);
 		if (fnd != lines.end()) {
 			fnd->lineStates[num] = stat;
 		}
@@ -70,4 +82,25 @@ void SDRMain::pushButton_changLine_onclick()
 	} else {
 		QMessageBox::about(NULL, "Tips", "input integer (x1, y1)(x2, y2), the num=0,1,2, stat\nnot");
 	}
+}
+
+/*
+ * 布线模块，需要用到ui的线路和源信息，以及controller的汇信息（扫描通信充电）
+ */
+
+// TODO：新布线算法
+void SDRMain::onTimeout()
+{
+	arr.lockDataMutex();
+	arr.NofCharging = arr.chargeList.size();
+	arr.coilList.assign(arr.chargeList.begin(), arr.chargeList.end());  // 充电
+	arr.coilList.insert(arr.coilList.end(), arr.commuList.begin(), arr.commuList.end());  // 通信
+	// TODO：扫描
+	arr.unlockDataMutex();
+
+	ui.switchesShowWidget->lockDataMutex();
+	arr.initiation(ui.switchesShowWidget);  // ui的线路信息和源信息
+	arr.build(ui.switchesShowWidget);  // controller的汇信息
+	arr.flow(ui.switchesShowWidget);  // 布线并更新ui
+	ui.switchesShowWidget->unlockDataMutex();
 }
