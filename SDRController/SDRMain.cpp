@@ -70,11 +70,11 @@ void SDRMain::pushButton_changLine_onclick()
 	if (ok) stat = ui.lineEdit_changLinestat->text().toInt(&ok);
 	if (ok) {
 		ui.switchesShowWidget->lockDataMutex(); // must lock when manipulate data
-		set<SwitchesShow::Switch3Line> & lines = ui.switchesShowWidget->lines;
-		SwitchesShow::Switch3Line tmp;
+		set<Switch3Line> & lines = ui.switchesShowWidget->lines;
+		Switch3Line tmp;
 		tmp.a.alpha = x1; tmp.a.beta = y1;
 		tmp.b.alpha = x2; tmp.b.beta = y2;
-		set<SwitchesShow::Switch3Line>::iterator fnd = lines.find(tmp);
+		set<Switch3Line>::iterator fnd = lines.find(tmp);
 		if (fnd != lines.end()) {
 			fnd->lineStates[num] = stat;
 		}

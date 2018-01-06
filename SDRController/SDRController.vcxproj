@@ -70,6 +70,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Arrange.cpp" />
+    <ClCompile Include="duhttp.c" />
+    <ClCompile Include="duhttpplatformrelated.c" />
     <ClCompile Include="GeneratedFiles\Debug\moc_SDRMain.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
@@ -125,6 +127,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Arrange.h" />
+    <ClInclude Include="duhttp.h" />
     <ClInclude Include="GeneratedFiles\ui_SDRMain.h" />
     <ClInclude Include="GeneratedFiles\ui_SwitchesShow.h" />
     <CustomBuild Include="SDRVersion.h">
