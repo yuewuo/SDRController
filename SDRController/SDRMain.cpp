@@ -87,6 +87,8 @@ void SDRMain::pushButton_changLine_onclick()
 // TODO：新布线算法
 void SDRMain::onTimeout()
 {
+	timer->stop();
+
 	arr.lockDataMutex();
 	arr.NofCharging = arr.chargeList.size();
 	arr.coilList.assign(arr.chargeList.begin(), arr.chargeList.end());  // 充电
@@ -99,4 +101,8 @@ void SDRMain::onTimeout()
 	arr.build(ui.switchesShowWidget);  // controller的汇信息
 	arr.flow(ui.switchesShowWidget);  // 布线并更新ui
 	ui.switchesShowWidget->unlockDataMutex();
+}
+
+void SDRMain::FinishedCharging()
+{
 }

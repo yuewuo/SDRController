@@ -27,6 +27,7 @@ vector<Edge_t> e;
 // Max Flow
 vector<int> dis;
 vector<int> que;
+vector<bool> inq;
 vector<int> from;
 vector<int> link;
 map<int, pair<int, int>> route;
@@ -34,6 +35,8 @@ map<int, pair<int, int>> route;
 // Initialize original graph
 void Arrange_t::initiation(SwitchesShow *ss)
 {
+	qDebug() << "Entered Initiation";
+
 	Point2Id.clear();
 	NofEdge = ss->lines.size();
 	for (set<Switch3Line>::iterator it = ss->lines.begin(); it != ss->lines.end(); ++it)
@@ -57,6 +60,8 @@ void Arrange_t::initiation(SwitchesShow *ss)
 	PluginPoint.clear();
 	for (set<PluginDevice>::iterator it = ss->plugins.begin(); it != ss->plugins.end(); ++it)
 		PluginPoint.insert(make_pair(Point2Id[Point_t(it->position)], it->name));
+
+	qDebug() << "Finished Initiation";
 }
 
 // Build abstracted graph
@@ -74,11 +79,25 @@ vector<int> getCoil(Point_t origin, int pattern)
 		for (int i = 0; i < NofDirection; ++i)
 			coil.push_back(Point2Id[origin.neighbour(i)]);
 	}
+	if (pattern == +3)
+	{
+		coil.push_back(Point2Id[origin]);
+		for (int i = 0; i < 2; ++i)
+			coil.push_back(Point2Id[origin.neighbour(i)]);
+	}
+	if (pattern == -3)
+	{
+		coil.push_back(Point2Id[origin]);
+		for (int i = 3; i < 5; ++i)
+			coil.push_back(Point2Id[origin.neighbour(i)]);
+	}
 	return coil;
 }
 
 void Arrange_t::build(SwitchesShow *ss)
 {
+	qDebug() << "Entered Build";
+
 	Point2Node.clear();
 	NofNode = NofPoint;
 	for (int i = 0; i < NofPoint; ++i)
@@ -156,6 +175,7 @@ void Arrange_t::build(SwitchesShow *ss)
 				addEdge(i, S, 0, 0);
 			}
 		}
+	qDebug() << "Finished Build";
 }
 
 // pattern in {-3, +3, 6, 12}  分别对应单匝反三角、单匝正三角、单匝六边形、双匝六边形
@@ -187,6 +207,41 @@ int antiState(int inDir, int outDir, int outState)
 	return inState;
 }
 
+int circle(vector<int> coil, int hub, bool arrange)
+{
+	int SwitchId;
+	int n = coil.size();
+	for (int i = 0; i < n - 1; ++i)
+	{
+		int p = coil[i];
+		int q = coil[i + 1];
+		if (i)
+		{
+			int inDir = getDir(coil[i], coil[i - 1]);
+			int outDir = getDir(coil[i], coil[i + 1]);
+			hub = Switch2Hub[SwitchId][inDir];
+			SwitchId = Hub2Switch[hub][outDir];
+			qDebug() << inDir << ' ' << outDir << ' ' << hub << ' ' << SwitchId;
+		}
+		else
+		{
+			int outDir = getDir(coil[i], coil[i + 1]);
+			SwitchId = Hub2Switch[hub][outDir];
+			qDebug() << outDir << ' ' << hub << ' ' << SwitchId;
+		}
+		if (arrange)
+		{
+			map<int, pair<int, int>>::iterator it = route.find(p);
+			it->second.second |= 1 << SwitchId;
+//			qDebug() << it->first << ' ' << it->second.first << ' ' << it->second.second;
+		}
+	}
+	int inDir = getDir(coil[n-1], coil[n-2]);
+	hub = Switch2Hub[SwitchId][inDir];
+	qDebug() << inDir << ' ' << hub << ' ' << SwitchId;
+	return hub;
+}
+
 pair<QString, int> Arrange_t::dfs(SwitchesShow *ss, int x, int inDir)
 {
 	map<int, pair<int, int>>::iterator it = route.find(x);
@@ -206,22 +261,13 @@ pair<QString, int> Arrange_t::dfs(SwitchesShow *ss, int x, int inDir)
 			if (start == -1) coil.push_back(coil[i]);
 			if (coil[i] == x) start = i;
 		}
-
+		coil.erase(coil.begin(), coil.begin() + start);
 		n = coil.size();
-		int SwitchId = 0;
-		for (int i = start; i < n-1; ++i)
-		{
-			int p = coil[i];
-			int q = coil[i + 1];
-			if (i != start)
-			{
-				int inDir = getDir(coil[i], coil[i - 1]);
-				int outDir = getDir(coil[i], coil[i + 1]);
-				SwitchId = Hub2Switch[Switch2Hub[SwitchId][inDir]][outDir];
-			}
-			it = route.find(x);
-			it->second.second |= 1 << SwitchId;
-		}
+
+		for (start = 0; start < NofSwitchPerLine; ++start)
+			if (circle(coil, start, false) != start) break;
+		int end = circle(coil, start, true);
+
 		bool vs = false;
 		if (inDir == -1)
 		{
@@ -240,10 +286,11 @@ pair<QString, int> Arrange_t::dfs(SwitchesShow *ss, int x, int inDir)
 				}
 			}
 		}
-		int outDir = getDir(coil[n - 1], coil[n - 2]);
-		int state = 1 << Hub2Switch[Switch2Hub[SwitchId][outDir]][inDir];
-		outDir = getDir(coil[start], coil[start + 1]);
-		state |= 1 << Hub2Switch[Switch2Hub[0][outDir]][inDir];
+		int outDir = getDir(coil[0], coil[1]);
+		int inDir = getDir(coil[n - 1], coil[n - 2]);
+		int state = 1 << Hub2Switch[end][inDir];
+		state |= 1 << Hub2Switch[start][outDir];
+		qDebug() << start << ' ' << end << ' ' << inDir << ' ' << outDir << ' ' << state;
 		if (vs)
 		{
 			it->second.second = state;
@@ -278,31 +325,42 @@ pair<QString, int> Arrange_t::dfs(SwitchesShow *ss, int x, int inDir)
 
 void Arrange_t::flow(SwitchesShow *ss)
 {
+	qDebug() << "Entered Flow";
+
 	int flow = 0, cost = 0;
 
 	dis.resize(N);
 	que.resize(N);
+	inq.resize(N);
 	from.resize(N);
 	link.resize(N);
 	while (1)
 	{
 		for (int i = 0; i < N; ++i)
-			dis[i] = INF;
+			dis[i] = INF, inq[i] = false;
 		dis[S] = 0;
 
 		int take = -1, put = 0;
 		que[put] = S;
+		inq[S] = true;
 		while (take != put)
 		{
 			if (++take == NofNode) take = 0;
 			int x = que[take];
 			for (int i = head[x]; i != -1; i = e[i].next)
-				if (e[i].c > 0 && dis[x]+e[i].v < dis[e[i].r])
+			{
+				if (e[i].c > 0 && dis[x] + e[i].v < dis[e[i].r])
 				{
-					dis[e[i].r] = dis[x]+e[i].v;
+					dis[e[i].r] = dis[x] + e[i].v;
 					from[e[i].r] = x;
 					link[e[i].r] = i;
+					if (!inq[e[i].r])
+					{
+						if (++put == NofNode) put = 0;
+						que[put] = e[i].r;
+					}
 				}
+			}
 		}
 		if (dis[T] == INF) break;
 
@@ -318,7 +376,10 @@ void Arrange_t::flow(SwitchesShow *ss)
 	}
 
 	if (flow != NofCoil)
-		QMessageBox::about(NULL, "ERROR", "Failed to Arrange");
+	{
+		QMessageBox::about(NULL, "ERROR", "flow != NofCoil");
+		return;
+	}
 
 	route.clear();
 	for (int x = 0; x < NofPoint; ++x)
@@ -353,7 +414,7 @@ void Arrange_t::flow(SwitchesShow *ss)
 		{
 			pair<QString, int> ret = dfs(ss, e[i].r, -1);
 			if (ret.second != 0)
-				QMessageBox::about(NULL, "ERROR", "Failed to Arrange");
+				QMessageBox::about(NULL, "ERROR", "Failed to Route");
 		}
 
 	for (map<int,pair<int,int>>::iterator it = route.begin(); it != route.end(); ++it)
@@ -365,16 +426,19 @@ void Arrange_t::flow(SwitchesShow *ss)
 		set<Switch3Line>::iterator fnd = ss->lines.find(tmp);
 		if (fnd != ss->lines.end()) {
 			int stat = it->second.second;
+			qDebug() << it->first << ' ' << it->second.first << ' ' << it->second.second;
 			for (int i = 0; i < NofSwitchPerLine; ++i)
 			fnd->lineStates[i] = (stat & (1 << i)) >> i;
 		}
 	}
+
+	qDebug() << "Finished Flow";
 }
 
 Arrange_t::Arrange_t()
 {
-	commuList.push_back(make_pair(Point_t(3, 5), 3));  // for debug
-	chargeList.push_back(make_pair(Point_t(1, 1), 6));  // for debug
+	commuList.push_back(make_pair(Point_t(0, 2), 3));  // for debug
+//	chargeList.push_back(make_pair(Point_t(1, 5), 6));  // for debug
 }
 
 void Arrange_t::lockDataMutex()
@@ -394,7 +458,7 @@ bool Point_t::operator < (const struct Point_t P) const
 
 bool Point_t::operator == (const struct Point_t P) const
 {
-	return x == P.x == y < P.y;
+	return (x == P.x) && (y == P.y);
 }
 
 Point_t Point_t::neighbour(int direction)

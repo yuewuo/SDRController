@@ -10,7 +10,7 @@
 #include <cstring>
 using std::string;
 
-const int timer_interval = 200;
+const int timer_interval = 1000;
 
 class SDRMain : public QMainWindow
 {
