@@ -10,11 +10,14 @@
 SDRMain::SDRMain(QWidget *parent)
 	: QMainWindow(parent)
 {
+	testUnit = new TestsClass(this, this);
 	ui.setupUi(this);
+	ui.switchesShowWidget->enabletreeWidget_ESP32s(ui.treeView_ESP32s);
 	timer = new QTimer(this);
 	connect(ui.pushButton_importconfig, SIGNAL(clicked()), this, SLOT(pushButton_importconfig_onclick()));
 	connect(ui.pushButton_exportconfig, SIGNAL(clicked()), this, SLOT(pushButton_exportconfig_onclick()));
 	connect(ui.pushButton_changLine, SIGNAL(clicked()), this, SLOT(pushButton_changLine_onclick()));
+	connect(ui.pushButton_testButton, SIGNAL(clicked()), this, SLOT(pushButton_testButton_onclick()));
 	connect(timer, SIGNAL(timeout()), this, SLOT(onTimeout()));
 }
 
@@ -82,6 +85,15 @@ void SDRMain::pushButton_changLine_onclick()
 	} else {
 		QMessageBox::about(NULL, "Tips", "input integer (x1, y1)(x2, y2), the num=0,1,2, stat\nnot");
 	}
+}
+
+void SDRMain::pushButton_testButton_onclick()
+{
+	//testUnit->TcpLink("127.0.0.1", 666);
+	ui.switchesShowWidget->lockDataMutex();
+	//ui.switchesShowWidget->esp32s.begin()->reboot(); // test OK
+	ui.switchesShowWidget->esp32s.begin()->proxyTest();
+	ui.switchesShowWidget->unlockDataMutex(); // must unlock (it also auto refresh!)
 }
 
 // TODO：新布线算法

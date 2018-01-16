@@ -19,6 +19,7 @@
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QStatusBar>
+#include <QtWidgets/QTreeView>
 #include <QtWidgets/QWidget>
 #include "SwitchesShow.h"
 
@@ -30,6 +31,7 @@ public:
     QWidget *centralWidget;
     QGroupBox *groupBox;
     SwitchesShow *switchesShowWidget;
+    QTreeView *treeView_ESP32s;
     QGroupBox *groupBox_2;
     QPushButton *pushButton_importconfig;
     QPushButton *pushButton_exportconfig;
@@ -40,21 +42,25 @@ public:
     QLineEdit *lineEdit_changLinestat;
     QLineEdit *lineEdit_changLinex2;
     QLineEdit *lineEdit_changLinenum;
+    QPushButton *pushButton_testButton;
     QStatusBar *statusBar;
 
     void setupUi(QMainWindow *SDRMainClass)
     {
         if (SDRMainClass->objectName().isEmpty())
             SDRMainClass->setObjectName(QStringLiteral("SDRMainClass"));
-        SDRMainClass->resize(1600, 900);
+        SDRMainClass->resize(1600, 996);
         centralWidget = new QWidget(SDRMainClass);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         groupBox = new QGroupBox(centralWidget);
         groupBox->setObjectName(QStringLiteral("groupBox"));
-        groupBox->setGeometry(QRect(10, 10, 600, 861));
+        groupBox->setGeometry(QRect(10, 10, 600, 961));
         switchesShowWidget = new SwitchesShow(groupBox);
         switchesShowWidget->setObjectName(QStringLiteral("switchesShowWidget"));
         switchesShowWidget->setGeometry(QRect(0, 20, 600, 600));
+        treeView_ESP32s = new QTreeView(groupBox);
+        treeView_ESP32s->setObjectName(QStringLiteral("treeView_ESP32s"));
+        treeView_ESP32s->setGeometry(QRect(10, 630, 371, 321));
         groupBox_2 = new QGroupBox(centralWidget);
         groupBox_2->setObjectName(QStringLiteral("groupBox_2"));
         groupBox_2->setGeometry(QRect(620, 10, 361, 411));
@@ -85,6 +91,9 @@ public:
         lineEdit_changLinenum = new QLineEdit(groupBox_2);
         lineEdit_changLinenum->setObjectName(QStringLiteral("lineEdit_changLinenum"));
         lineEdit_changLinenum->setGeometry(QRect(170, 100, 31, 31));
+        pushButton_testButton = new QPushButton(groupBox_2);
+        pushButton_testButton->setObjectName(QStringLiteral("pushButton_testButton"));
+        pushButton_testButton->setGeometry(QRect(10, 140, 131, 51));
         SDRMainClass->setCentralWidget(centralWidget);
         statusBar = new QStatusBar(SDRMainClass);
         statusBar->setObjectName(QStringLiteral("statusBar"));
@@ -109,6 +118,7 @@ public:
         lineEdit_changLinestat->setText(QApplication::translate("SDRMainClass", "stat", nullptr));
         lineEdit_changLinex2->setText(QApplication::translate("SDRMainClass", "x2", nullptr));
         lineEdit_changLinenum->setText(QApplication::translate("SDRMainClass", "num", nullptr));
+        pushButton_testButton->setText(QApplication::translate("SDRMainClass", "TestButton", nullptr));
     } // retranslateUi
 
 };

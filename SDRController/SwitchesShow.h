@@ -25,11 +25,19 @@
 #include "SDRVersion.h"
 #include <cmath>
 #include <QKeyEvent>
+#include <QTcpSocket>
+#include <QHostAddress>
+#include "duhttp.h"
+#include <QStandardItemModel>
+#include <QTreeView>
+#include <QAbstractSocket>
 
 using std::vector;
 using std::map;
 using std::set;
 using std::string;
+
+class SwitchesShow;
 
 struct IntPoint {
 	int alpha = 0;
@@ -42,10 +50,51 @@ struct IntPoint {
 struct Switch3Line {
 	mutable IntPoint a; // it's dangerous, but OK
 	mutable IntPoint b;
+	int bindExtId;
+	QString bindExtGPIO;
 	mutable int lineStates[3] = { 0, 0, 0 };
 	vector<double> giveme3line() const;
 	QColor getColor(int lineno) const;
 	bool operator < (const Switch3Line& l) const;
+};
+
+class ESP32: public QObject{
+	Q_OBJECT
+private:
+	mutable QTcpSocket socket;
+	mutable DuHttpReceiver duHttpReceiver;
+	mutable DuHttp duHttp;
+	mutable DuHttp sendDuHttp;
+	static const int SENDBUFSIZE = 4096;
+	mutable char sendbuf[SENDBUFSIZE];
+public:
+	QHostAddress addr;
+	int port = 80;
+	int id;
+	QString name;
+	QString bootscript;
+	ESP32();
+	ESP32(const ESP32 & x);
+	~ESP32();
+	bool tryConnect(int timeout = 3000) const;
+	bool operator < (const ESP32& x) const;
+	void reboot() const;
+	void probeAndSync(const SwitchesShow& ss) const;
+	void proxyTest() const;
+
+	friend class SwitchesShow;
+private slots:
+	void socket_Read_Data();
+	void fetchInfo();
+};
+
+struct GPIOExt {
+	mutable set<QString> binded; // binded ports
+	int id;
+	QString bindType; // e.g. "ESP32"
+	int bindId; // e.g. 1
+	QString bindMethod; // e.g. "UART1", "SPI1", "GPIO7"
+	bool operator < (const GPIOExt& p) const;
 };
 
 struct PluginDevice {
@@ -55,6 +104,9 @@ struct PluginDevice {
 	mutable int state = 0;
 	bool operator < (const PluginDevice& p) const;
 	QColor getColor() const;
+	QString bindType; // e.g. "ESP32"
+	int bindId; // e.g. 1
+	QString bindMethod; // e.g. "uart1", "spi1", "GPIO7"
 };
 
 class SwitchesShow : public QWidget
@@ -70,8 +122,12 @@ public:
 
 	set<Switch3Line> lines;
 	set<PluginDevice> plugins;
+	set<ESP32> esp32s;
+	set<GPIOExt> gpioexts;
 	void lockDataMutex();
 	void unlockDataMutex();
+
+	void enabletreeWidget_ESP32s(QTreeView * treeView_ESP32s);
 
 	static void autoRotateSwitch3Lines(const Switch3Line& l);
 
@@ -94,4 +150,6 @@ private:
 	double toPixelY(double normaly);
 	void autoFitToShow(); // must call this when mutex is locked
 	void extraInit();
+	QTreeView * treeView_ESP32s = NULL;
+	void updatetreeWidget_ESP32s();
 };
