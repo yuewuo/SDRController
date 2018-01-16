@@ -1,4 +1,4 @@
-#ifndef ARRANGE_H
+#ifndef ARRA NGE_H
 #define ARRANGE_H
 
 #include "SwitchesShow.h"
@@ -40,15 +40,23 @@ struct Edge_t
 	Edge_t(int _r, int _c, int _v, int _n) : r(_r), c(_c), v(_v), next(_n) {}
 };
 
+struct Coil_t
+{
+	Point_t o;
+	int pattern;
+	bool fresh;
+	bool operator < (const struct Coil_t) const;
+};
+
 class Arrange_t
 {
 public:
 	Arrange_t();
 
 	int NofCharging;
-	vector<pair<Point_t, int>> chargeList;
-	vector<pair<Point_t, int>> commuList;
-	vector<pair<Point_t, int>> coilList;
+	vector<Coil_t> chargeList;
+	vector<Coil_t> commuList;
+	vector<Coil_t> coilList;
 
 	void initiation(SwitchesShow* ss);
 	void build(SwitchesShow* ss);

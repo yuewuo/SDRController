@@ -106,7 +106,7 @@ void Arrange_t::build(SwitchesShow *ss)
 	NofCoil = coilList.size();
 	for (int i = 0; i < NofCoil; ++i)
 	{
-		vector<int> coil = getCoil(coilList[i].first, coilList[i].second);
+		vector<int> coil = getCoil(coilList[i].o, coilList[i].pattern);
 		int n = coil.size();
 		for (int  j = 0; j < n; ++j)
 			Point2Node[coil[j]] = NofNode;
@@ -249,8 +249,8 @@ pair<QString, int> Arrange_t::dfs(SwitchesShow *ss, int x, int inDir)
 	{
 		int CoilId = Point2Node[x] - NofPoint; assert(CoilId >= 0);
 		QString type = (CoilId < NofCharging) ? "QiDemo" : "PN532";
-		int turns = getTurns(coilList[CoilId].second);
-		vector<int> coil = getCoil(coilList[CoilId].first, coilList[CoilId].second);
+		int turns = getTurns(coilList[CoilId].pattern);
+		vector<int> coil = getCoil(coilList[CoilId].o, coilList[CoilId].pattern);
 		int n = coil.size();
 		for (int i = 1; i < turns; ++i)
 			coil.insert(coil.end(), coil.begin(), coil.begin() + n);
@@ -437,8 +437,8 @@ void Arrange_t::flow(SwitchesShow *ss)
 
 Arrange_t::Arrange_t()
 {
-	commuList.push_back(make_pair(Point_t(0, 2), 3));  // for debug
-//	chargeList.push_back(make_pair(Point_t(1, 5), 6));  // for debug
+	commuList.push_back(Coil_t{ Point_t(0, 2), 3, 1 });  // for debug
+//	chargeList.push_back(Coil_t{ Point_t(0, 2), 3, 1 });  // for debug
 }
 
 void Arrange_t::lockDataMutex()
@@ -479,4 +479,9 @@ IntPoint Point_t::to_IntPoint()
 	ret.alpha = x;
 	ret.beta = y;
 	return ret;
+}
+
+bool Coil_t::operator < (const struct Coil_t C) const
+{
+	return o < C.o || (o == C.o && pattern < C.pattern);
 }
