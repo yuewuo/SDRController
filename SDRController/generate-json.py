@@ -61,16 +61,12 @@ swithches = ""
 
 plugins += nfc_plugin % "0 0" + ',\n'
 plugins += nfc_plugin % "0 10" + ',\n'
-plugins += nfc_plugin % "0 20" + ',\n'
-plugins += nfc_plugin % "0 30" + ',\n'
-plugins += charging_plugin % "30 0" + ',\n'
-plugins += charging_plugin % "30 10" + ',\n'
-plugins += charging_plugin % "30 20" + ',\n'
-plugins += charging_plugin % "30 29" + '\n'
+plugins += charging_plugin % "10 0" + ',\n'
+plugins += charging_plugin % "10 9" + '\n'
 
 cnt = -1
-n = 30
-m = 30
+n = 10
+m = 10
 def link(x1, y1, x2, y2, isend=False):
   global cnt
   cnt = cnt + 1

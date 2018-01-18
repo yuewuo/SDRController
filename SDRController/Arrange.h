@@ -70,8 +70,6 @@ public:
 private:
 	QMutex mutex; // must lock this one to operate data
 	pair<QString, int> dfs(SwitchesShow *ss, int x, int inDir);
-	void algorithm2_flow();
-	void algorithm2_build();
 };
 
 #endif

@@ -11,7 +11,7 @@
 #include <TestsClass.h>
 using std::string;
 
-const int timer_interval = 5000;
+const int timer_interval = 1000;
 
 class SDRMain : public QMainWindow
 {

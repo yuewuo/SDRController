@@ -54,10 +54,10 @@ public:
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         groupBox = new QGroupBox(centralWidget);
         groupBox->setObjectName(QStringLiteral("groupBox"));
-        groupBox->setGeometry(QRect(10, 10, 901, 961));
+        groupBox->setGeometry(QRect(10, 10, 1081, 961));
         switchesShowWidget = new SwitchesShow(groupBox);
         switchesShowWidget->setObjectName(QStringLiteral("switchesShowWidget"));
-        switchesShowWidget->setGeometry(QRect(0, 20, 1081, 941));
+        switchesShowWidget->setGeometry(QRect(0, 0, 1081, 941));
         groupBox_2 = new QGroupBox(centralWidget);
         groupBox_2->setObjectName(QStringLiteral("groupBox_2"));
         groupBox_2->setGeometry(QRect(1100, 10, 361, 411));

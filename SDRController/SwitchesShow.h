@@ -131,6 +131,8 @@ public:
 
 	static void autoRotateSwitch3Lines(const Switch3Line& l);
 
+	void setAllLineZero();
+
 protected:
 	void paintEvent(QPaintEvent *event);
 	void mouseDoubleClickEvent(QMouseEvent *e);

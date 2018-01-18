@@ -487,6 +487,13 @@ void SwitchesShow::autoRotateSwitch3Lines(const Switch3Line & l)
 		, a.alpha, a.beta, b.alpha, b.beta);
 }
 
+void SwitchesShow::setAllLineZero()
+{
+	for (auto p = lines.begin(); p != lines.end(); ++p) {
+		p->lineStates[0] = p->lineStates[1] = p->lineStates[2] = 0;
+	}
+}
+
 double SwitchesShow::toPixelX(double normalx)
 {
 	return biasX + normToPixel * normalx;

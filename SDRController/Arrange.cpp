@@ -132,7 +132,8 @@ void Arrange_t::build(SwitchesShow *ss)
 	for (int i = 0; i < NofCoil; ++i)
 		if(!coilList[i].fresh)
 		{
-			vector<Point_t> &pointList = routeCache[make_pair(coilList[i].o, coilList[i].pattern)];
+			vector<Point_t> pointList = routeCache[make_pair(coilList[i].o, coilList[i].pattern)];
+			qDebug() << coilList[i].o.x<<", " << coilList[i].o.y <<" " <<pointList.size();
 			for (int j = 0; j < pointList.size(); ++j)
 			{
 				used[Point2Node[Point2Id[pointList[j]]]] = true;
@@ -287,7 +288,6 @@ int circle(vector<int> coil, int hub, bool arrange)
 
 pair<QString, int> Arrange_t::dfs(SwitchesShow *ss, int x, int inDir)
 {
-	qDebug() << "hello" << x;
 	map<int, pair<int, int>>::iterator it = route.find(x);
 	if (it == route.end())
 	{
@@ -348,9 +348,7 @@ pair<QString, int> Arrange_t::dfs(SwitchesShow *ss, int x, int inDir)
 	}
 
 	int y = it->second.first;
-	qDebug() << "hello!!!" << y;
 	int outDir = getDir(x, y);
-	qDebug() << "hello!!!" << y;
 	pair<QString, int> ret = dfs(ss, y, antiDirection(outDir));
 	routeCache[currentCenter].push_back(Id2Point[x]);
 	it->second.second = ret.second;
@@ -481,6 +479,7 @@ void Arrange_t::flow(SwitchesShow *ss)
 
 void Arrange_t::plot(SwitchesShow* ss)
 {
+	ss->setAllLineZero();
 	for (int i = head[S]; i != -1; i = e[i].next)
 		if (e[i].c == 0)
 		{
@@ -573,7 +572,7 @@ void Arrange_t::unlockDataMutex()
 
 bool Point_t::operator < (const struct Point_t P) const
 {
-	return x < P.x || x == P.x && y < P.y;
+	return x < P.x || (x == P.x && y < P.y);
 }
 
 bool Point_t::operator == (const struct Point_t P) const

@@ -105,25 +105,26 @@ int timeout_cnt = 0;
 // TODO：新布线算法
 void SDRMain::onTimeout()
 {
-	timeout_cnt++;
 	timer->stop();
 
 	arr.lockDataMutex();
 
 	arr.commuList.clear();
 	arr.chargeList.clear();
-	if (timeout_cnt == 1)
+	if (timeout_cnt  == 0)
 	{
 		arr.commuList.push_back(Coil_t{ Point_t(2, 0), 3, 1 });  // for debug
-		arr.chargeList.push_back(Coil_t{ Point_t(5, 5), 12, 1 });  // for debug
+		arr.chargeList.push_back(Coil_t{ Point_t(3, 5), 6, 1 });  // for debug
 	}
 	else
 	{
 		arr.commuList.push_back(Coil_t{ Point_t(2, 0), 3, 0 });  // for debug
-		arr.chargeList.push_back(Coil_t{ Point_t(5, 5), 12, 0 });  // for debug
-		arr.chargeList.push_back(Coil_t{ Point_t(15, 15), 12, 1 });
-		arr.chargeList.push_back(Coil_t{ Point_t(5, 15), 12, 1 });
+		arr.chargeList.push_back(Coil_t{ Point_t(3, 5), 6, 0 });  // for debug
+		//arr.chargeList.push_back(Coil_t{ Point_t(5, 15), 12, 1 });
 	}
+	if (timeout_cnt % 4 != 0)
+		arr.chargeList.push_back(Coil_t{ Point_t(8, 7), -3, 0 });  // for debug
+	arr.commuList.push_back(Coil_t{ Point_t(5, timeout_cnt%10), 3, 1 });
 	arr.NofCharging = arr.chargeList.size();
 	arr.coilList.assign(arr.chargeList.begin(), arr.chargeList.end());  // 充电
 	arr.coilList.insert(arr.coilList.end(), arr.commuList.begin(), arr.commuList.end());  // 通信
@@ -136,6 +137,7 @@ void SDRMain::onTimeout()
 	ui.switchesShowWidget->unlockDataMutex();
 	timer->start(timer_interval);
 
+	timeout_cnt++;
 }
 
 void SDRMain::FinishedCharging()
