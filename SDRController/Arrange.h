@@ -1,4 +1,4 @@
-#ifndef ARRA NGE_H
+#ifndef ARRANGE_H
 #define ARRANGE_H
 
 #include "SwitchesShow.h"
@@ -62,12 +62,17 @@ public:
 	void build(SwitchesShow* ss);
 	void flow(SwitchesShow* ss);
 
+	void algorithm2(SwitchesShow* ss);
 	void lockDataMutex();
 	void unlockDataMutex();
 
 private:
 	QMutex mutex; // must lock this one to operate data
 	pair<QString, int> dfs(SwitchesShow *ss, int x, int inDir);
+	void algorithm2_flow();
+	void algorithm2_build();
+	void algorithm2_plot(SwitchesShow* ss);
+	pair<QString, int> algorithm2_dfs(SwitchesShow *ss, int x, int inDir);
 };
 
 #endif

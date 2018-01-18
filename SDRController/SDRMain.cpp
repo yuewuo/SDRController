@@ -115,9 +115,12 @@ void SDRMain::onTimeout()
 	arr.unlockDataMutex();
 
 	ui.switchesShowWidget->lockDataMutex();
-	arr.initiation(ui.switchesShowWidget);  // ui的线路信息和源信息
-	arr.build(ui.switchesShowWidget);  // controller的汇信息
-	arr.flow(ui.switchesShowWidget);  // 布线并更新ui
+	arr.initiation(ui.switchesShowWidget);
+	  // ui的线路信息和源信息
+	//arr.build(ui.switchesShowWidget);  // controller的汇信息
+	//arr.flow(ui.switchesShowWidget);  // 布线并更新ui
+	
+	arr.algorithm2(ui.switchesShowWidget);
 	ui.switchesShowWidget->unlockDataMutex();
 }
 
