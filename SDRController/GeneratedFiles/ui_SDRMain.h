@@ -31,7 +31,6 @@ public:
     QWidget *centralWidget;
     QGroupBox *groupBox;
     SwitchesShow *switchesShowWidget;
-    QTreeView *treeView_ESP32s;
     QGroupBox *groupBox_2;
     QPushButton *pushButton_importconfig;
     QPushButton *pushButton_exportconfig;
@@ -43,6 +42,7 @@ public:
     QLineEdit *lineEdit_changLinex2;
     QLineEdit *lineEdit_changLinenum;
     QPushButton *pushButton_testButton;
+    QTreeView *treeView_ESP32s;
     QStatusBar *statusBar;
 
     void setupUi(QMainWindow *SDRMainClass)
@@ -54,16 +54,13 @@ public:
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         groupBox = new QGroupBox(centralWidget);
         groupBox->setObjectName(QStringLiteral("groupBox"));
-        groupBox->setGeometry(QRect(10, 10, 600, 961));
+        groupBox->setGeometry(QRect(10, 10, 901, 961));
         switchesShowWidget = new SwitchesShow(groupBox);
         switchesShowWidget->setObjectName(QStringLiteral("switchesShowWidget"));
-        switchesShowWidget->setGeometry(QRect(0, 20, 600, 600));
-        treeView_ESP32s = new QTreeView(groupBox);
-        treeView_ESP32s->setObjectName(QStringLiteral("treeView_ESP32s"));
-        treeView_ESP32s->setGeometry(QRect(10, 630, 371, 321));
+        switchesShowWidget->setGeometry(QRect(0, 20, 1081, 941));
         groupBox_2 = new QGroupBox(centralWidget);
         groupBox_2->setObjectName(QStringLiteral("groupBox_2"));
-        groupBox_2->setGeometry(QRect(620, 10, 361, 411));
+        groupBox_2->setGeometry(QRect(1100, 10, 361, 411));
         pushButton_importconfig = new QPushButton(groupBox_2);
         pushButton_importconfig->setObjectName(QStringLiteral("pushButton_importconfig"));
         pushButton_importconfig->setGeometry(QRect(10, 20, 341, 31));
@@ -94,6 +91,9 @@ public:
         pushButton_testButton = new QPushButton(groupBox_2);
         pushButton_testButton->setObjectName(QStringLiteral("pushButton_testButton"));
         pushButton_testButton->setGeometry(QRect(10, 140, 131, 51));
+        treeView_ESP32s = new QTreeView(centralWidget);
+        treeView_ESP32s->setObjectName(QStringLiteral("treeView_ESP32s"));
+        treeView_ESP32s->setGeometry(QRect(1100, 430, 361, 541));
         SDRMainClass->setCentralWidget(centralWidget);
         statusBar = new QStatusBar(SDRMainClass);
         statusBar->setObjectName(QStringLiteral("statusBar"));

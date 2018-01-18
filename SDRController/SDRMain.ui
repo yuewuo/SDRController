@@ -19,7 +19,7 @@
      <rect>
       <x>10</x>
       <y>10</y>
-      <width>600</width>
+      <width>901</width>
       <height>961</height>
      </rect>
     </property>
@@ -31,18 +31,8 @@
       <rect>
        <x>0</x>
        <y>20</y>
-       <width>600</width>
-       <height>600</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QTreeView" name="treeView_ESP32s">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>630</y>
-       <width>371</width>
-       <height>321</height>
+       <width>1081</width>
+       <height>941</height>
       </rect>
      </property>
     </widget>
@@ -50,7 +40,7 @@
    <widget class="QGroupBox" name="groupBox_2">
     <property name="geometry">
      <rect>
-      <x>620</x>
+      <x>1100</x>
       <y>10</y>
       <width>361</width>
       <height>411</height>
@@ -189,6 +179,16 @@
       <string>TestButton</string>
      </property>
     </widget>
+   </widget>
+   <widget class="QTreeView" name="treeView_ESP32s">
+    <property name="geometry">
+     <rect>
+      <x>1100</x>
+      <y>430</y>
+      <width>361</width>
+      <height>541</height>
+     </rect>
+    </property>
    </widget>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>

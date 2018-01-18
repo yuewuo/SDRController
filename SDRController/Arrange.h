@@ -1,6 +1,6 @@
 #ifndef ARRANGE_H
 #define ARRANGE_H
-
+#define ALGORITHM2
 #include "SwitchesShow.h"
 
 using namespace std;
@@ -61,8 +61,9 @@ public:
 	void initiation(SwitchesShow* ss);
 	void build(SwitchesShow* ss);
 	void flow(SwitchesShow* ss);
+	void plot(SwitchesShow* ss);
 
-	void algorithm2(SwitchesShow* ss);
+	void arrange_algorithm(SwitchesShow* ss);
 	void lockDataMutex();
 	void unlockDataMutex();
 
@@ -71,8 +72,6 @@ private:
 	pair<QString, int> dfs(SwitchesShow *ss, int x, int inDir);
 	void algorithm2_flow();
 	void algorithm2_build();
-	void algorithm2_plot(SwitchesShow* ss);
-	pair<QString, int> algorithm2_dfs(SwitchesShow *ss, int x, int inDir);
 };
 
 #endif
