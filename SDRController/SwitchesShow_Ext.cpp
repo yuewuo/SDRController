@@ -165,6 +165,9 @@ int SwitchesShow::importConfig(string jsonstr)
 				update(); // need to explicitly call the repaint function
 				mutex.unlock();
 			}
+			if (json.contains("NFCWPTmod")) {
+
+			}
 			if (json.contains("plugins")) {
 				mutex.lock();
 				plugins.clear();
